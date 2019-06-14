@@ -56,12 +56,12 @@
   },
   "author": "JaysonHwang <huangzhenjie@126.com> (https://github.com/JaysonHwang)",
   "bugs": {
-    "url": "https://github.com/JaysonHwang/jwt-autorefresh/issues"
+    "url": "https://github.com/JaysonHwang/jwt-autorefresh-fix/issues"
   },
-  "homepage": "https://github.com/JaysonHwang/jwt-autorefresh",
+  "homepage": "https://github.com/JaysonHwang/jwt-autorefresh-fix",
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/JaysonHwang/jwt-autorefresh.git"
+    "url": "git+https://github.com/JaysonHwang/jwt-autorefresh-fix.git"
   }
 }

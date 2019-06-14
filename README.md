@@ -1,19 +1,19 @@
-# jwt-autorefresh
+# jwt-autorefresh-fix
 
 **Extremely lightweight and tested universal refresh token scheduler. Ensures access tokens are always refreshed in advance of their expiration automatically and integrates with any third party api / persistence architecture.**
 
-[![NPM](https://nodei.co/npm/jwt-autorefresh.png?stars=true&downloads=true)](https://nodei.co/npm/jwt-autorefresh/)
+[![NPM](https://nodei.co/npm/jwt-autorefresh-fix.png?stars=true&downloads=true)](https://nodei.co/npm/jwt-autorefresh-fix/)
 
 ## Install
 
-`npm i -S jwt-autorefresh`
+`npm i -S jwt-autorefresh-fix`
 
 
 ## How to use
 
 
 ```js
-import autorefresh from 'jwt-autorefresh'
+import autorefresh from 'jwt-autorefresh-fix'
 import { onAuthorize, onDeauthorize } from './events'
 
 /** Function that returns a promise which will resolve to a simple jwt access_token (you handle the persistence mechanism) */
