@@ -4,6 +4,7 @@ import { assert } from 'chai'
 
 const createLogger = () => console;
 const IS_DEV = process.env.NODE_ENV !== 'production'
+const MAX_DELAY = Math.pow(2, 31) - 1; // setTimeout,setInterval max delay 
 const CODES = { DELAY: 'DELAY'
               , DELAY_ERROR: 'DELAY_ERROR'
               , INVALID_JWT: 'INVALID_JWT'
@@ -11,7 +12,7 @@ const CODES = { DELAY: 'DELAY'
               , SCHEDULE: 'SCHEDULE'
               , START: 'START'
               , CANCEL: 'CANCEL'
-              }
+            }
 const format = (code, message) => `${code}|${message}`
 
 const validate = ({ refresh, leadSeconds, log = createLogger({ name: 'autorefresh', level: IS_DEV ? 'warn' : 'error' })}) => {
@@ -23,7 +24,6 @@ const validate = ({ refresh, leadSeconds, log = createLogger({ name: 'autorefres
   }
   return { refresh, leadSeconds, log }
 }
-
 export default function autorefresh(opts) {
   const { refresh, leadSeconds, log } = validate(opts)
   let timeoutID = null
@@ -48,7 +48,12 @@ export default function autorefresh(opts) {
         assert.isAbove(lead, 0, 'lead seconds must resolve to a positive number of seconds')
       }
       const refreshAtMS = (exp - lead) * 1000
-      const delay = refreshAtMS - Date.now()
+      const expectDelay = refreshAtMS - Date.now()
+      let realDelay = expectDelay;
+      if(expectDelay>MAX_DELAY){
+        realDelay = MAX_DELAY;
+        log.info(format(CODES.DELAY, `expect  => ${expectDelay} ms downgrade to ${realDelay} ms, caused by setTimeout|setInterval limit of ${MAX_DELAY} ms`))
+      }
       log.info(format(CODES.DELAY, `calculated autorefresh delay => ${(delay / 1000).toFixed(1)} seconds`))
       return delay
     } catch(err) {
