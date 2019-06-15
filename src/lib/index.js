@@ -52,7 +52,7 @@ export default function autorefresh(opts) {
       let realDelay = expectDelay;
       if(expectDelay>MAX_DELAY){
         realDelay = MAX_DELAY;
-        log.info(format(CODES.DELAY, `expect  => ${expectDelay} ms downgrade to ${realDelay} ms, caused by setTimeout|setInterval limit of ${MAX_DELAY} ms`))
+        log.info(format(CODES.DELAY, `expected ${expectDelay}(ms) downgrade to ${realDelay}(ms), caused by setTimeout|setInterval limit of ${MAX_DELAY}(ms)`))
       }
       log.info(format(CODES.DELAY, `calculated autorefresh delay => ${(delay / 1000).toFixed(1)} seconds`))
       return delay
