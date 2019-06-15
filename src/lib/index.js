@@ -54,8 +54,8 @@ export default function autorefresh(opts) {
         realDelay = MAX_DELAY;
         log.info(format(CODES.DELAY, `expected ${expectDelay}(ms) downgrade to ${realDelay}(ms), caused by setTimeout|setInterval limit of ${MAX_DELAY}(ms)`))
       }
-      log.info(format(CODES.DELAY, `calculated autorefresh delay => ${(delay / 1000).toFixed(1)} seconds`))
-      return delay
+      log.info(format(CODES.DELAY, `calculated autorefresh delay => ${(realDelay / 1000).toFixed(1)} seconds`))
+      return realDelay
     } catch(err) {
       if(/$Unexpected token [A-Za-z] in JSON/.test(err.message))
         throw new Error(format(CODES.INVALID_JWT, `JWT token was not a valid format => ${access_token}`))
