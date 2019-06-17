@@ -2,19 +2,25 @@ import { encode, decode } from 'jwt-simple'
 import autorefresh from '../'
 
 const SECRET = 'xxx'
-const REQUIRED_CLAIMS = [ 'nbf', 'exp' ]
+const REQUIRED_CLAIMS = [ 'iat', 'nbf', 'exp' ]
 const RECOMMENDED_CLAIMS = [ 'sub', 'aud' ]
 
 const generate = () => {
-  const nbf = Date.now() / 1000
-  const claimsPass = [{ nbf, exp: nbf + 1 }, { nbf, exp: nbf + 10 }, { nbf, exp: nbf + 100 }]
+  const DATE_NOW = Date.now();
+  const iat = DATE_NOW / 1000;
+  const nbf = iat + 1;
+  const claimsPass = [
+    { iat, nbf, exp: nbf + 1 },
+    { iat, nbf, exp: nbf + 10 },
+    { iat, nbf, exp: nbf + 100 },
+  ];
 
-  const claimsFail =  [ { nbf, exp: nbf - 100 }
-                      , { nbf: Date.now() / 100, exp: Date.now() / 100 - 1 }
-                      , { nbf: Date.now() / 10, exp: Date.now() / 10 }
-                      , { nbf: Date.now() * -1, exp: Date.now() * -1 + 1 }
-                      ]
-
+  const claimsFail = [
+    { iat, nbf, exp: nbf - 100 },
+    { iat: DATE_NOW / 100, nbf: DATE_NOW / 100, exp: DATE_NOW / 100 - 1 }, 
+    { iat: DATE_NOW / 10, nbf: DATE_NOW / 10, exp: DATE_NOW / 10 }, 
+    { iat: DATE_NOW * -1, nbf: DATE_NOW * -1, exp: DATE_NOW * -1 + 1 },
+  ]
 
   const jwtPass = claimsPass.map(x => encode(x, SECRET))
   const jwtFail = claimsFail.map(x => encode(x, SECRET))
@@ -22,7 +28,14 @@ const generate = () => {
   const refreshFail = jwtFail.map(x => () => { throw new Error('BAD REFRESH')})
   const leadSecondsPass = [10, () => 100]
   const leadSecondsFail = [-10, () => -1]
-  return { nbf, claimsPass, claimsFail, jwtPass, jwtFail, refreshPass, refreshFail, leadSecondsPass, leadSecondsFail }
+  const delayFuncPass = [
+    undefined,
+    ({ iat, exp, lead }) => {
+      return exp - iat - lead;
+    },
+  ];
+  const delayFuncFail = ['not a function or undefined'];
+  return { nbf, claimsPass, claimsFail, jwtPass, jwtFail, refreshPass, refreshFail, leadSecondsPass, leadSecondsFail, delayFuncPass, delayFuncFail }
 }
 
 describe('autorefresh', () => {
@@ -44,12 +57,21 @@ describe('autorefresh', () => {
     const [refresh] = refreshPass
     expect(() => autorefresh({ refresh })).toThrow()
   })
-
   it('with valid params returns function', () => {
-    const {refreshPass, leadSecondsPass} = data
+    const {refreshPass, leadSecondsPass, delayFuncPass } = data
     const [refresh] = refreshPass
     const [leadSeconds] = leadSecondsPass
-    expect(autorefresh({ refresh, leadSeconds })).toEqual(jasmine.any(Function))
+    const [delayFunc] = delayFuncPass
+    expect(autorefresh({ refresh, leadSeconds, delayFunc })).toEqual(jasmine.any(Function))
+  })
+
+  it('start thunk with bad delayFunc throws', () => {
+    const {refreshPass, leadSecondsPass, jwtPass, delayFuncFail } = data
+    const [refresh] = refreshPass
+    const [leadSeconds] = leadSecondsPass
+    const [access_token] = jwtPass
+    const [delayFunc] = delayFuncFail
+    expect(() => autorefresh({ refresh, leadSeconds, delayFunc })(access_token)).toThrow()
   })
 
   it('start thunk with bad refresh throws', () => {
