@@ -1,6 +1,6 @@
 {
   "name": "jwt-autorefresh-fix",
-  "version": "0.2.9",
+  "version": "0.2.10",
   "description": "Factory to schedule and execute calls to refresh token endpoints in advance of token expiration.Fix source map error.",
   "main": "lib/index.js",
   "files": [
