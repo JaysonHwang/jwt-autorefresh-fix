@@ -60,7 +60,7 @@ export default function autorefresh(opts) {
         assert.typeOf(lead, 'number', 'leadSeconds must be or return a number')
         assert.isAbove(lead, 0, 'lead seconds must resolve to a positive number of seconds')
       }
-      const expectDelay = delayFunc({ exp, iat, lead });
+      const expectDelay = delayFunc({ exp, iat, lead }) * 1000;
       let realDelay = expectDelay;
       if(expectDelay > MAX_DELAY){
         realDelay = MAX_DELAY;

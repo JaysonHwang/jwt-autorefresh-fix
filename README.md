@@ -59,6 +59,7 @@ const delayFunc = ({exp, iat, nbf, lead}) => {
 
 or you can use `delayFunc` to calculate the final delay time yourself 
 ```
+// delayFunc return milliSeconds
 const delayFunc = ({exp, iat, nbf, lead}) => {
   return (exp - iat) / 2 - lead;
 }
