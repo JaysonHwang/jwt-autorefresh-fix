@@ -49,3 +49,19 @@ onAuthorize(access_token => {
 
 onDeauthorize(() => cancel())
 ```
+
+let 'delayFunc' to `undefined` will use inner default function:
+```
+const delayFunc = ({exp, iat, nbf, lead}) => {
+  return exp - iat - lead;
+}
+```
+
+or you can use `delayFunc` to calculate the final delay time yourself 
+```
+const delayFunc = ({exp, iat, nbf, lead}) => {
+  return (exp - iat) / 2 - lead;
+}
+let start = autorefresh({ refresh, leadSeconds, delayFunc })
+...
+```
