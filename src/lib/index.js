@@ -6,7 +6,7 @@ const createLogger = () => console;
 const IS_DEV = process.env.NODE_ENV !== 'production'
 const MAX_DELAY = Math.pow(2, 31) - 1; // setTimeout,setInterval max delay 
 const DEFAULT_DELAY_FUNC = ({ exp, iat, lead }) => {
-  const lifeLong = exp - iat;
+  const lifeLong = exp - Date.now();
   return lifeLong - lead;
 }
 const CODES = {
